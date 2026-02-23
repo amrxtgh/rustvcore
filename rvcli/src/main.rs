@@ -1,7 +1,7 @@
 use rvcore::CPU;
 
 fn main() {
-    let mut cpu = CPU::new(1024);
+    let mut cpu = CPU::new();
     //cpu.regs[1] = 10;
     //cpu.regs[2] = 20;
     //
