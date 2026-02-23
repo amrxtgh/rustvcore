@@ -5,7 +5,7 @@ pub struct RAM {
 impl RAM {
     pub fn new(size: usize) -> Self {
         Self {
-            data: vec![0, size],
+            data: vec![0; size],
         }
     }
     pub fn load32(&self, addr: usize) {

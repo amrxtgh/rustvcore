@@ -4,7 +4,7 @@ pub struct CPU {
 }
 
 impl CPU {
-   pub fn new(memory_size: usize) -> Self {
+   pub fn new() -> Self {
         Self {
             regs: [0; 32],
             pc: 0,
