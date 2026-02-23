@@ -4,3 +4,6 @@ members = [
   "rvcore",
   "rvcli",
 ]
+
+[workspace.dependencies]
+rvcore = { path = "rvcore" }
