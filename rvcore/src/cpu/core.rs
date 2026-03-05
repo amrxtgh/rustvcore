@@ -18,8 +18,10 @@ impl PrivilegeMode {
     }
 }
 
+pub const XLEN: u32 = 32;
+
 pub struct CPU {
-    pub regs: [u32; 32],
+    pub regs: [u32; XLEN as usize],
     pub pc: u32,
     pub mode: PrivilegeMode,
 }
@@ -27,7 +29,7 @@ pub struct CPU {
 impl CPU {
     pub fn new() -> Self {
         Self {
-            regs: [0; 32],
+            regs: [0; XLEN as usize],
             pc: 0,
             mode: PrivilegeMode::Machine,
         }
