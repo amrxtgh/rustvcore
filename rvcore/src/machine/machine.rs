@@ -7,10 +7,10 @@ pub struct Machine {
 }
 
 impl Machine {
-    pub fn new(mem_size: usize) -> Self {
+    pub fn new() -> Self {
         Self {
             cpu: CPU::new(),
-            ram: RAM::new(mem_size),
+            ram: RAM::new(),
         }
     }
 }
