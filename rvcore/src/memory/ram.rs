@@ -8,13 +8,7 @@ impl RAM {
             data: vec![0; size],
         }
     }
-    pub fn load32(&self, addr: usize) {
+    pub fn load32(&self, addr: usize) {}
 
-    }
-
-    pub fn store32(&self, addr: usize, val: u32) {
-    }
+    pub fn store32(&self, addr: usize, val: u32) {}
 }
-
-
-

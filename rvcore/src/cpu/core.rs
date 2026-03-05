@@ -4,17 +4,23 @@ pub struct CPU {
 }
 
 impl CPU {
-   pub fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             regs: [0; 32],
             pc: 0,
         }
     }
     pub fn read_reg(&self, index: usize) -> u32 {
-        if index == 0 { 0 } else { self.regs[index] } // ensure rv x0 is always 0
+        if index == 0 {
+            0
+        } else {
+            self.regs[index]
+        } // ensure rv x0 is always 0
     }
     pub fn write_reg(&mut self, index: usize, value: u32) {
-        if index != 0 { let _ = self.regs[index] = value; } // ensure writing to x0 not possible
+        if index != 0 {
+            let _ = self.regs[index] = value;
+        } // ensure writing to x0 not possible
     }
 
     pub fn add(&mut self, rd: usize, rs1: usize, rs2: usize) {
