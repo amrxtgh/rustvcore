@@ -1,6 +1,27 @@
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PrivilegeMode {
+    User = 0,
+    Supervisor = 1,
+    Machine = 3,
+    Debug = 4,
+}
+
+impl PrivilegeMode {
+    pub fn from_u8(value: u8) -> Self {
+        match value {
+            0 => PrivilegeMode::User,
+            1 => PrivilegeMode::Supervisor,
+            3 => PrivilegeMode::Machine,
+            4 => PrivilegeMode::Debug,
+            _ => PrivilegeMode::Machine,
+        }
+    }
+}
+
 pub struct CPU {
-    pub regs: [u32; 32], //x0-x31
+    pub regs: [u32; 32],
     pub pc: u32,
+    pub mode: PrivilegeMode,
 }
 
 impl CPU {
@@ -8,6 +29,7 @@ impl CPU {
         Self {
             regs: [0; 32],
             pc: 0,
+            mode: PrivilegeMode::Machine,
         }
     }
     pub fn read_reg(&self, index: usize) -> u32 {
