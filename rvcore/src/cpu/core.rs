@@ -41,14 +41,10 @@ impl CPU {
 
     // Read register. x0 is hardwired to zero by ISA definition.
     pub fn read_reg(&self, index: usize) -> u32 {
-        if index == 0 {
-            0
-        } else {
-            self.regs[index]
-        }
+        if index == 0 { 0 } else { self.regs[index] }
     }
 
-    // Write register. Writes to x0 are ignored by ISA definition.
+    // Write register. Writes to x0 are ignored by ISA definition:.
     pub fn write_reg(&mut self, index: usize, value: u32) {
         if index != 0 {
             let _ = self.regs[index] = value;
@@ -56,7 +52,10 @@ impl CPU {
     }
 
     // RV32I integer arithmetic (R- and I-format).
-    pub fn add(&mut self, rd: usize, rs1: usize, rs2: usize) {}
+    pub fn add(&mut self, rd: usize, rs1: usize, rs2: usize) {
+        let result = self.regs[rs1].wrapping_add(self.regs[rs2]);
+        if rd != 0 { self.regs[rd] = result; }
+    }
     pub fn sub(&mut self, rd: usize, rs1: usize, rs2: usize) {}
     pub fn addi(&mut self, rd: usize, rs1: usize, imm: i32) {}
 
