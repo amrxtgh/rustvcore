@@ -1,3 +1,5 @@
+use crate::isa::rv32i;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PrivilegeMode {
     User = 0,
@@ -20,17 +22,19 @@ impl PrivilegeMode {
 
 pub const XLEN: u32 = 32;
 
+/*
+
+Single hart: represents execution context 
+Each hart has it's own PC, registers and can run fetch-decode-execute loop 
+
+*/ 
 pub struct CPU {
-    // General-purpose integer registers (x0..x31).
     pub regs: [u32; XLEN as usize],
-    // Program counter (byte address of current instruction).
     pub pc: u32,
-    // Current privilege mode.
     pub mode: PrivilegeMode,
 }
 
 impl CPU {
-    // Creating a CPU in machine mode with zeroed state.
     pub fn new() -> Self {
         Self {
             regs: [0; XLEN as usize],
@@ -46,134 +50,83 @@ impl CPU {
 
     // Write register. Writes to x0 are ignored by ISA definition:.
     pub fn write_reg(&mut self, index: usize, value: u32) {
-        if index != 0 {
-            let _ = self.regs[index] = value;
+        if index != 0 { let _ = self.regs[index] = value; }
+    }
+
+    pub fn exec_op_imm(&mut self, instruction: u32) {
+        let rd = ((instruction >> 7) & 0x1F) as usize;
+        let rs1 = ((instruction >> 15) & 0x1F) as usize;
+        let imm = (instruction >> 20) as i32;
+        let funct3 = (instruction >> 12) & 0x7;
+
+        match funct3 {
+            0 => rv32i::addi(self, rd, rs1, imm),
+            2 => rv32i::slti(self, rd, rs1, imm),
+            3 => rv32i::sltiu(self, rd, rs1, imm),
+            4 => rv32i::xori(self, rd, rs1, imm),
+            6 => rv32i::ori(self, rd, rs1, imm),
+            7 => rv32i::andi(self, rd, rs1, imm),
+            1 => rv32i::slli(self, rd, rs1, (imm & 0x1F) as u32),
+            5 => {
+                if (imm & 0x20) != 0 {
+                    rv32i::srai(self, rd, rs1, (imm & 0x1F) as u32)
+                } else {
+                    rv32i::srli(self, rd, rs1, (imm & 0x1F) as u32)
+                }
+            }
+            _ => {}
         }
     }
 
-    // RV32I integer arithmetic (R- and I-format).
-    pub fn add(&mut self, rd: usize, rs1: usize, rs2: usize) {
-        let result = self.regs[rs1].wrapping_add(self.regs[rs2]);
-        if rd != 0 { self.regs[rd] = result; }
+    pub fn exec_op(&mut self, instruction: u32) {
+        let rd = ((instruction >> 7) & 0x1F) as usize;
+        let rs1 = ((instruction >> 15) & 0x1F) as usize;
+        let rs2 = ((instruction >> 20) & 0x1F) as usize;
+        let funct3 = (instruction >> 12) & 0x7;
+        let funct7 = instruction >> 25;
+
+        match (funct7, funct3) {
+            (0, 0) => rv32i::add(self, rd, rs1, rs2),
+            (0, 1) => rv32i::sll(self, rd, rs1, rs2),
+            (0, 2) => rv32i::slt(self, rd, rs1, rs2),
+            (0, 3) => rv32i::sltu(self, rd, rs1, rs2),
+            (0, 4) => rv32i::xor(self, rd, rs1, rs2),
+            (0, 5) => rv32i::srl(self, rd, rs1, rs2),
+            (0, 6) => rv32i::or(self, rd, rs1, rs2),
+            (0, 7) => rv32i::and(self, rd, rs1, rs2),
+            (0x20, 0) => rv32i::sub(self, rd, rs1, rs2),
+            (0x20, 5) => rv32i::sra(self, rd, rs1, rs2),
+            _ => {}
+        }
     }
-    pub fn sub(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn addi(&mut self, rd: usize, rs1: usize, imm: i32) {}
 
-    // RV32I compare/set instructions.
-    pub fn slt(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn sltu(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn slti(&mut self, rd: usize, rs1: usize, imm: i32) {}
-    pub fn sltiu(&mut self, rd: usize, rs1: usize, imm: i32) {}
+    pub fn exec_load(&mut self, instruction: u32) {
+        let rd = ((instruction >> 7) & 0x1F) as usize;
+        let rs1 = ((instruction >> 15) & 0x1F) as usize;
+        let imm = (instruction >> 20) as i32;
+        let funct3 = (instruction >> 12) & 0x7;
 
-    // RV32I logical operations.
-    pub fn and(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn or(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn xor(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn andi(&mut self, rd: usize, rs1: usize, imm: i32) {}
-    pub fn ori(&mut self, rd: usize, rs1: usize, imm: i32) {}
-    pub fn xori(&mut self, rd: usize, rs1: usize, imm: i32) {}
+        match funct3 {
+            0 => rv32i::lb(self, rd, rs1, imm),
+            1 => rv32i::lh(self, rd, rs1, imm),
+            2 => rv32i::lw(self, rd, rs1, imm),
+            4 => rv32i::lbu(self, rd, rs1, imm),
+            5 => rv32i::lhu(self, rd, rs1, imm),
+            _ => {}
+        }
+    }
 
-    // RV32I shifts (register and immediate forms).
-    pub fn sll(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn srl(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn sra(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn slli(&mut self, rd: usize, rs1: usize, shamt: u32) {}
-    pub fn srli(&mut self, rd: usize, rs1: usize, shamt: u32) {}
-    pub fn srai(&mut self, rd: usize, rs1: usize, shamt: u32) {}
+    pub fn exec_store(&mut self, instruction: u32) {
+        let rs1 = ((instruction >> 15) & 0x1F) as usize;
+        let rs2 = ((instruction >> 20) & 0x1F) as usize;
+        let imm = (((instruction >> 25) as i32) << 5) | ((instruction >> 7) & 0x1F) as i32;
+        let funct3 = (instruction >> 12) & 0x7;
 
-    // RV32/64 load instructions (I-format).
-    // Note: LWU/LD are RV64-oriented placeholders in this RV32-sized CPU state.
-    pub fn lb(&mut self, rd: usize, rs1: usize, imm: i32) {}
-    pub fn lbu(&mut self, rd: usize, rs1: usize, imm: i32) {}
-    pub fn lh(&mut self, rd: usize, rs1: usize, imm: i32) {}
-    pub fn lhu(&mut self, rd: usize, rs1: usize, imm: i32) {}
-    pub fn lw(&mut self, rd: usize, rs1: usize, imm: i32) {}
-    pub fn lwu(&mut self, rd: usize, rs1: usize, imm: i32) {}
-    pub fn ld(&mut self, rd: usize, rs1: usize, imm: i32) {}
-
-    // RV32/64 store instructions (S-format).
-    // Note: SD is an RV64-oriented placeholder.
-    pub fn sb(&mut self, rs1: usize, rs2: usize, imm: i32) {}
-    pub fn sh(&mut self, rs1: usize, rs2: usize, imm: i32) {}
-    pub fn sw(&mut self, rs1: usize, rs2: usize, imm: i32) {}
-    pub fn sd(&mut self, rs1: usize, rs2: usize, imm: i32) {}
-
-    // RV32I branch instructions (B-format).
-    pub fn beq(&mut self, rs1: usize, rs2: usize, imm: i32) {}
-    pub fn bne(&mut self, rs1: usize, rs2: usize, imm: i32) {}
-    pub fn blt(&mut self, rs1: usize, rs2: usize, imm: i32) {}
-    pub fn bge(&mut self, rs1: usize, rs2: usize, imm: i32) {}
-    pub fn bltu(&mut self, rs1: usize, rs2: usize, imm: i32) {}
-    pub fn bgeu(&mut self, rs1: usize, rs2: usize, imm: i32) {}
-
-    // RV32I control-flow jumps (J- and I-format).
-    pub fn jal(&mut self, rd: usize, imm: i32) {}
-    pub fn jalr(&mut self, rd: usize, rs1: usize, imm: i32) {}
-
-    // RV32I/RV32Zicsr system instructions.
-    pub fn ecall(&mut self) {}
-    pub fn ebreak(&mut self) {}
-
-    // Zicsr control and status register operations.
-    pub fn csrrw(&mut self, rd: usize, rs1: usize, csr: u32) {}
-    pub fn csrrs(&mut self, rd: usize, rs1: usize, csr: u32) {}
-    pub fn csrrc(&mut self, rd: usize, rs1: usize, csr: u32) {}
-    pub fn csrwi(&mut self, rd: usize, imm: u32, csr: u32) {}
-    pub fn csrsi(&mut self, rd: usize, imm: u32, csr: u32) {}
-    pub fn csrci(&mut self, rd: usize, imm: u32, csr: u32) {}
-
-    // M extension (integer multiply/divide).
-    pub fn mul(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn mulh(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn mulhsu(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn mulhu(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn div(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn divu(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn rem(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn remu(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-
-    // A extension (atomic memory operations).
-    // Note: *_d variants are RV64-oriented placeholders.
-    pub fn lr_w(&mut self, rd: usize, rs1: usize) {}
-    pub fn lr_d(&mut self, rd: usize, rs1: usize) {}
-    pub fn sc_w(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn sc_d(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amoswap_w(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amoswap_d(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amoadd_w(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amoadd_d(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amoxor_w(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amoxor_d(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amoand_w(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amoand_d(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amoor_w(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amoor_d(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amomin_w(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amomin_d(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amomax_w(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amomax_d(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amominu_w(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amominu_d(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amomaxu_w(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn amomaxu_d(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-
-    // F extension (single-precision floating-point).
-    pub fn fadd_s(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn fsub_s(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn fmul_s(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn fdiv_s(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn fsqrt_s(&mut self, rd: usize, rs1: usize) {}
-    pub fn fsgnj_s(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn fsgnjn_s(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn fsgnjx_s(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn fmin_s(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn fmax_s(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn fcvt_w_s(&mut self, rd: usize, rs1: usize) {}
-    pub fn fcvt_s_w(&mut self, rd: usize, rs1: usize) {}
-    pub fn fmv_x_w(&mut self, rd: usize, rs1: usize) {}
-    pub fn fmv_w_x(&mut self, rd: usize, rs1: usize) {}
-    pub fn feq_s(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn flt_s(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn fle_s(&mut self, rd: usize, rs1: usize, rs2: usize) {}
-    pub fn fclass_s(&mut self, rd: usize, rs1: usize) {}
+        match funct3 {
+            0 => rv32i::sb(self, rs1, rs2, imm),
+            1 => rv32i::sh(self, rs1, rs2, imm),
+            2 => rv32i::sw(self, rs1, rs2, imm),
+            _ => {}
+        }
+    }
 }
