@@ -1,5 +1,7 @@
+use crate::trap::Exception;
+
 /// Default DRAM size: 1 GiB.
-pub const DRAM_SIZE: u64 = 1024 * 1024 * 1024;
+const DRAM_SIZE: u64 = 1024 * 1024 * 1024;
 pub struct RAM {
     pub data: Vec<u8>,
 }
@@ -8,6 +10,13 @@ impl RAM {
         Self {
             data: vec![0; DRAM_SIZE as usize],
         }
+    }
+
+    pub fn load8(&self, addr: u32) -> Result<u8, Exception> {
+        todo!()
+    }
+    pub fn load16(&self, addr: u32) -> Result<u16, Exception> {
+        todo!()
     }
     pub fn load32(&self, addr: u32) -> u32 {
         let addr = addr as usize;
@@ -21,5 +30,14 @@ impl RAM {
         // combining the bytes into 32-bit word
         b0 | (b1 << 8) | (b2 << 16) | (b3 << 24)
     }
-    pub fn store32(&self, _addr: u32, _val: u32) {}
+    pub fn store8(&self, addr: u32) -> Result<(), Exception> {
+        todo!()
+    }
+    pub fn store16(&self, addr: u32) -> Result<(), Exception> {
+        todo!()
+    }
+
+    pub fn store32(&self, _addr: u32, _val: u32) -> Result<(), Exception> {
+        todo!()
+    }
 }
