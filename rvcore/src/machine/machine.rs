@@ -15,18 +15,17 @@ impl Machine {
     }
 
     pub fn step(&mut self) {
-        
         // fetch
-        let instruction = self.ram.load32(self.pc);
-        
+        let instruction = self.ram.load32(self.cpu.pc);
+
         // decode
         let opcode = instruction & 0x7f; // (bit masking leaving only the opcode)
 
         match opcode {
-            0x13 => self.cpu.exec_op_imm(instruction),      // I-type (register+immediate)
-            0x33 => self.cpu.exec_op(instruction),          // R-type (register-register)
-            0x03 => self.cpu.exec_load(instruction),        // Load
-            0x23 => self.cpu.exec_store(instruction),       // Store
+            0x13 => self.cpu.exec_op_imm(instruction), // I-type (register+immediate)
+            0x33 => self.cpu.exec_op(instruction),     // R-type (register-register)
+            0x03 => self.cpu.exec_load(instruction),   // Load
+            0x23 => self.cpu.exec_store(instruction),  // Store
             _ => panic!("Unknown opcode {:x}", opcode),
         }
         self.cpu.pc += 4;
