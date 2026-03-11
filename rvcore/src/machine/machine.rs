@@ -1,5 +1,6 @@
 use crate::cpu::core::CPU;
 use crate::memory::ram::RAM;
+use crate::trap::Exception;
 
 pub struct Machine {
     pub cpu: CPU,
@@ -14,7 +15,7 @@ impl Machine {
         }
     }
 
-    pub fn step(&mut self) {
+    pub fn step(&mut self) -> Result<(), Exception> {
         // fetch
         let instruction = self.ram.load32(self.cpu.pc);
 
@@ -29,5 +30,6 @@ impl Machine {
             _ => panic!("Unknown opcode {:x}", opcode),
         }
         self.cpu.pc += 4;
+        Ok(())
     }
 }
