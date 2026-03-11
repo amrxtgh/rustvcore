@@ -11,7 +11,8 @@ impl RAM {
             data: vec![0; DRAM_SIZE as usize],
         }
     }
-
+    // TODO: i think this methods can be done properly using 
+    // pattern matching.
     pub fn load8(&self, addr: u32) -> Result<u8, Exception> {
         todo!()
     }
