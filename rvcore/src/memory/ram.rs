@@ -20,7 +20,6 @@ impl RAM {
         // converting the bits into little-endian order
         // combining the bytes into 32-bit word
         b0 | (b1 << 8) | (b2 << 16) | (b3 << 24)
-
     }
     pub fn store32(&self, _addr: u32, _val: u32) {}
 }

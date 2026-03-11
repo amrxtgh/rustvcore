@@ -1,2 +1,2 @@
-pub mod exceptionns;
-pub use exceptionns::Exception;
+pub mod exceptions;
+pub use exceptions::Exception;
