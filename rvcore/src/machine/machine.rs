@@ -22,6 +22,11 @@ impl Machine {
         // decode
         let opcode = instruction & 0x7f; // (bit masking leaving only the opcode)
 
+        /*
+         
+        opcode indentifies the instruction class, not the exact instruction
+
+        */
         match opcode {
             0x13 => self.cpu.exec_op_imm(instruction), // I-type (register+immediate)
             0x33 => self.cpu.exec_op(instruction),     // R-type (register-register)
