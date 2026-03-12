@@ -32,4 +32,15 @@ impl Machine {
         self.cpu.pc += 4;
         Ok(())
     }
+    pub fn run(&mut self) {
+        loop {
+            match self.step() {
+                Ok(_) => {}
+                Err(_) => {
+                    println!("Trap encountered!");
+                    break;
+                }
+            }
+        }
+    }
 }
