@@ -9,14 +9,11 @@ the traps for advanced privilege systems like:
 - supervisor traps 
 
 these appears when implementing (particularly EEI) :
-- MMU
-- virtual memory
-- operating 
-- devices
+- MMU, virtual memory, Operating System, devices
 
 What are the traps I am implementing here:
 Fetch stage:
- - instruction address misaligned(PC not 4-byte aligned)
+ - Instruction address misaligned(PC not 4-byte aligned)
  - Instruction Access Fault(failed instruction fetch)
 Decode stage:
  - Illegal Instruction(unknown opcode or invalid encodings)
