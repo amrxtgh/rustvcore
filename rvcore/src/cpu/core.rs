@@ -19,14 +19,11 @@ impl PrivilegeMode {
         }
     }
 }
-
 pub const XLEN: u32 = 32;
 
 /*
-
 Single hart: represents execution context 
 Each hart has it's own PC, registers and can run fetch-decode-execute loop 
-
 */ 
 pub struct CPU {
     pub regs: [u32; XLEN as usize],
@@ -77,7 +74,6 @@ impl CPU {
             _ => {}
         }
     }
-
     pub fn exec_op(&mut self, instruction: u32) {
         let rd = ((instruction >> 7) & 0x1F) as usize;
         let rs1 = ((instruction >> 15) & 0x1F) as usize;

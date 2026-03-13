@@ -6,7 +6,6 @@ pub struct Machine {
     pub cpu: CPU,
     pub ram: RAM,
 }
-
 impl Machine {
     pub fn new() -> Self {
         Self {
@@ -14,18 +13,12 @@ impl Machine {
             ram: RAM::new(),
         }
     }
-
     pub fn step(&mut self) -> Result<(), Exception> {
         // fetch
         let instruction = self.ram.load32(self.cpu.pc);
-
-        // decode
         let opcode = instruction & 0x7f; // (bit masking leaving only the opcode)
-
         /*
-         
         opcode indentifies the instruction class, not the exact instruction
-
         */
         match opcode {
             0x13 => self.cpu.exec_op_imm(instruction), // I-type (register+immediate)
