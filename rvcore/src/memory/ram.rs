@@ -33,7 +33,7 @@ impl RAM {
     }
     pub fn load32(&self, addr: u32) -> Result<u32, Exception> {
         if addr % 4 != 0 { return Err(Exception::LoadAddressMisaligned); }
-        if addr as u64 + 3 >= DRAM_SIZE { return Err(Exception::LoadAddressMisaligned); }
+        if addr as u64 + 3 >= DRAM_SIZE { return Err(Exception::LoadAccessFault); }
 
         let index = addr as usize;
         // reading 4 bytes
