@@ -15,7 +15,7 @@ impl Machine {
     }
     pub fn step(&mut self) -> Result<(), Exception> {
         // fetch
-        let instruction = self.ram.load32(self.cpu.pc);
+        let instruction = self.ram.load32(self.cpu.pc)?;
         let opcode = instruction & 0x7f; // (bit masking leaving only the opcode)
         /*
         opcode indentifies the instruction class, not the exact instruction
