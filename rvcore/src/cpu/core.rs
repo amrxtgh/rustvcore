@@ -52,12 +52,13 @@ impl CPU {
 
     pub fn exec_op_imm(&mut self, instruction: u32) {
         let rd = ((instruction >> 7) & 0x1F) as usize;
-        let rs1 = ((instruction >> 15) & 0x1F) as usize;
-        let imm = (instruction >> 20) as i32;
         let funct3 = (instruction >> 12) & 0x7;
+        let rs1 = ((instruction >> 15) & 0x1F) as usize;
+
+        let imm = (instruction >> 20) as i32;
 
         match funct3 {
-            0 => rv32i::addi(self, rd, rs1, imm),
+            0x0 => rv32i::addi(self, rd, rs1, imm),
             2 => rv32i::slti(self, rd, rs1, imm),
             3 => rv32i::sltiu(self, rd, rs1, imm),
             4 => rv32i::xori(self, rd, rs1, imm),
