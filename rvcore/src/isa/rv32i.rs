@@ -1,8 +1,14 @@
+use crate::cpu::CPU;
 // Base RV32I 
 
 pub fn add(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
 pub fn sub(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
-pub fn addi(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
+
+pub fn addi(cpu: &mut CPU, rd: usize, rs1: usize, imm: i32) {
+    let val = cpu.read_reg(rs1).wrapping_add(imm as u32);
+    cpu.write_reg(rd, val);
+}
+
 pub fn slt(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
 pub fn sltu(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
 pub fn slti(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
