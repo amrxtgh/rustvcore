@@ -1,5 +1,5 @@
-use crate::cpu::core::CPU;
-use crate::memory::ram::RAM;
+use crate::cpu::CPU;
+use crate::memory::RAM;
 use crate::trap::Exception;
 
 pub struct Machine {
@@ -17,9 +17,9 @@ impl Machine {
         // fetch
         let instruction = self.ram.load32(self.cpu.pc)?;
         let opcode = instruction & 0x7f; // (bit masking leaving only the opcode)
-        /*
-        opcode indentifies the instruction class, not the exact instruction
-        */
+                                         /*
+                                         opcode indentifies the instruction class, not the exact instruction
+                                         */
         match opcode {
             0x13 => self.cpu.exec_op_imm(instruction), // I-type (register+immediate)
             0x33 => self.cpu.exec_op(instruction),     // R-type (register-register)

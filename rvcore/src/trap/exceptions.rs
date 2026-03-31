@@ -1,12 +1,12 @@
 /*
 I think we are here to implement only the architectural exceptions/traps defined
-in the base RV32I which are the ones that CPU itself can generate & we are ignoring 
+in the base RV32I which are the ones that CPU itself can generate & we are ignoring
 the traps for advanced privilege systems like:
 - page faults
 - virtual memory faults
 - interrupt controller traps
 - machine timer interrupts
-- supervisor traps 
+- supervisor traps
 
 these appears when implementing (particularly EEI) :
 - MMU, virtual memory, Operating System, devices
@@ -27,9 +27,9 @@ Memory stage:
  - Store Access Fault (invalid memory write)
  */
 
- #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 
- pub enum Exception {
+pub enum Exception {
     // Fetch Stage
     InstructionAddressMisaligned,
     InstructionAccessFault,
@@ -47,9 +47,9 @@ Memory stage:
 
     StoreAddressMisaligned,
     StoreAccessFault,
- }
+}
 
- impl Exception {
+impl Exception {
     pub fn code(self) -> u32 {
         match self {
             Exception::InstructionAddressMisaligned => 0,
@@ -63,4 +63,4 @@ Memory stage:
             Exception::StoreAccessFault => 7,
         }
     }
- }
+}

@@ -1,5 +1,5 @@
 use crate::cpu::CPU;
-// Base RV32I 
+// Base RV32I
 
 pub fn add(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
 pub fn sub(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}

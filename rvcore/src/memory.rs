@@ -1,2 +1,1 @@
-pub mod ram;
-pub use ram::RAM;
+pub use crate::ram::RAM;
