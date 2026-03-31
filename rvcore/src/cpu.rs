@@ -52,7 +52,7 @@ impl CPU {
     // Write register. Writes to x0 are ignored by ISA definition:.
     pub fn write_reg(&mut self, index: usize, value: u32) {
         if index != 0 {
-            let _ = self.regs[index] = value;
+            self.regs[index] = value;
         }
     }
 
@@ -61,7 +61,7 @@ impl CPU {
         let funct3 = (instruction >> 12) & 0x7;
         let rs1 = ((instruction >> 15) & 0x1F) as usize;
 
-        let imm = (instruction >> 20) as i32;
+        let imm = (instruction as i32) >> 20;
 
         match funct3 {
             0x0 => rv32i::addi(self, rd, rs1, imm),
