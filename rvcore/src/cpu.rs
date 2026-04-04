@@ -42,11 +42,7 @@ impl CPU {
 
     // Read register. x0 is hardwired to zero by ISA definition.
     pub fn read_reg(&self, index: usize) -> u32 {
-        if index == 0 {
-            0
-        } else {
-            self.regs[index]
-        }
+        if index == 0 { 0 } else { self.regs[index] }
     }
 
     // Write register. Writes to x0 are ignored by ISA definition:.
