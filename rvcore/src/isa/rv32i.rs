@@ -2,7 +2,6 @@ use crate::cpu::CPU;
 // Base RV32I
 
 pub fn add(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    let val = cpu.read_reg(rs1).wrapping_add(cpu.read_reg(rs2));
     cpu.write_reg(rd,
         cpu.read_reg(rs1).wrapping_add(cpu.read_reg(rs2))
     );
