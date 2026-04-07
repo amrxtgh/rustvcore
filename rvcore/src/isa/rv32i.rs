@@ -2,54 +2,44 @@ use crate::cpu::CPU;
 // Base RV32I
 
 pub fn add(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    cpu.write_reg(rd,
-        cpu.read_reg(rs1).wrapping_add(cpu.read_reg(rs2))
-    );
+    cpu.write_reg(rd, cpu.read_reg(rs1).wrapping_add(cpu.read_reg(rs2)));
 }
 
 // set less than for unsigned number
 pub fn sltu(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    cpu.write_reg(rd,
-        (cpu.read_reg(rs1) < cpu.read_reg(rs2)) as u32
-    );
+    cpu.write_reg(rd, (cpu.read_reg(rs1) < cpu.read_reg(rs2)) as u32);
 }
 
 pub fn and(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    cpu.write_reg(rd,
-        cpu.read_reg(rs1) & cpu.read_reg(rs2)
-    );
+    cpu.write_reg(rd, cpu.read_reg(rs1) & cpu.read_reg(rs2));
 }
 pub fn or(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    cpu.write_reg(rd,
-        cpu.read_reg(rs1) | cpu.read_reg(rs2)
-    );
+    cpu.write_reg(rd, cpu.read_reg(rs1) | cpu.read_reg(rs2));
 }
 pub fn xor(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    cpu.write_reg(rd,
-        cpu.read_reg(rs1) ^ cpu.read_reg(rs2)
-    );
+    cpu.write_reg(rd, cpu.read_reg(rs1) ^ cpu.read_reg(rs2));
 }
 pub fn sub(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    cpu.write_reg(rd,
-            cpu.read_reg(rs1).wrapping_sub(cpu.read_reg(rs2))
-        );
+    cpu.write_reg(rd, cpu.read_reg(rs1).wrapping_sub(cpu.read_reg(rs2)));
 }
 pub fn sll(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    let a = cpu.read_reg(rs1); 
+    let a = cpu.read_reg(rs1);
     let shamt = cpu.read_reg(rs2) & 0x1F;
     cpu.write_reg(rd, a << shamt);
 }
 pub fn srl(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    let a = cpu.read_reg(rs1); 
+    let a = cpu.read_reg(rs1);
     let shamt = cpu.read_reg(rs2) & 0x1F;
     cpu.write_reg(rd, a >> shamt);
 }
-pub fn sra(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
+pub fn sra(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
+    let a = cpu.read_reg(rs1) as i32;
+    let shamt = cpu.read_reg(rs2) & 0x1F;
+    cpu.write_reg(rd, (a >> shamt) as u32);
+}
 
 pub fn addi(cpu: &mut CPU, rd: usize, rs1: usize, imm: i32) {
-    cpu.write_reg(rd,
-        cpu.read_reg(rs1).wrapping_add(imm as u32)
-    );
+    // cpu.write_reg(rd, cpu.read_reg(rs1).wrapping_add(imm as u32));
 }
 
 pub fn slt(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
