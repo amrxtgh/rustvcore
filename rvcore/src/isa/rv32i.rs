@@ -34,8 +34,17 @@ pub fn sub(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
             cpu.read_reg(rs1).wrapping_sub(cpu.read_reg(rs2))
         );
 }
-pub fn sll(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
-pub fn srl(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
+pub fn sll(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
+    let a = cpu.read_reg(rs1); 
+    let shamt = cpu.read_reg(rs2) & 0x1F;
+    cpu.write_reg(rd, a << shamt);
+}
+pub fn srl(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
+    let a = cpu.read_reg(rs1); 
+    let shamt = cpu.read_reg(rs2) & 0x1F;
+    cpu.write_reg(rd, a >> shamt);
+}
+pub fn sra(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
 
 pub fn addi(cpu: &mut CPU, rd: usize, rs1: usize, imm: i32) {
     cpu.write_reg(rd,
@@ -49,7 +58,6 @@ pub fn sltiu(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
 pub fn andi(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
 pub fn ori(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
 pub fn xori(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
-pub fn sra(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
 pub fn slli(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _shamt: u32) {}
 pub fn srli(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _shamt: u32) {}
 pub fn srai(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _shamt: u32) {}
