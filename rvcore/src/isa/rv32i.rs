@@ -13,7 +13,12 @@ pub fn addi(cpu: &mut CPU, rd: usize, rs1: usize, imm: i32) {
 }
 
 pub fn slt(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
-pub fn sltu(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
+// set less than for unsigned number
+pub fn sltu(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
+    cpu.write_reg(rd,
+        (cpu.read_reg(rs1) < cpu.read_reg(rs2)) as u32
+    );
+}
 pub fn slti(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
 pub fn sltiu(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
 pub fn and(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
