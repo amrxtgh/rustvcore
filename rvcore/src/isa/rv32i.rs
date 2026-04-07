@@ -3,13 +3,16 @@ use crate::cpu::CPU;
 
 pub fn add(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
     let val = cpu.read_reg(rs1).wrapping_add(cpu.read_reg(rs2));
-    cpu.write_reg(rd, val);
+    cpu.write_reg(rd,
+        cpu.read_reg(rs1).wrapping_add(cpu.read_reg(rs2))
+    );
 }
 pub fn sub(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
 
 pub fn addi(cpu: &mut CPU, rd: usize, rs1: usize, imm: i32) {
-    let val = cpu.read_reg(rs1).wrapping_add(imm as u32);
-    cpu.write_reg(rd, val);
+    cpu.write_reg(rd,
+        cpu.read_reg(rs1).wrapping_add(imm as u32)
+    );
 }
 
 pub fn slt(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
