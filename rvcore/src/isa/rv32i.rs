@@ -19,7 +19,11 @@ pub fn and(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
         cpu.read_reg(rs1) & cpu.read_reg(rs2)
     );
 }
-pub fn or(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
+pub fn or(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
+    cpu.write_reg(rd,
+        cpu.read_reg(rs1) | cpu.read_reg(rs2)
+    );
+}
 pub fn xor(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
 pub fn sub(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
 pub fn sll(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
