@@ -77,6 +77,7 @@ impl CPU {
             _ => {}
         }
     }
+    // this is integer register register operations
     pub fn exec_op(&mut self, instruction: u32) {
         let rd = ((instruction >> 7) & 0x1F) as usize;
         let rs1 = ((instruction >> 15) & 0x1F) as usize;
