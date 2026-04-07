@@ -6,7 +6,24 @@ pub fn add(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
         cpu.read_reg(rs1).wrapping_add(cpu.read_reg(rs2))
     );
 }
+
+// set less than for unsigned number
+pub fn sltu(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
+    cpu.write_reg(rd,
+        (cpu.read_reg(rs1) < cpu.read_reg(rs2)) as u32
+    );
+}
+
+pub fn and(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
+    cpu.write_reg(rd,
+        cpu.read_reg(rs1) & cpu.read_reg(rs2)
+    );
+}
+pub fn or(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
+pub fn xor(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
 pub fn sub(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
+pub fn sll(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
+pub fn srl(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
 
 pub fn addi(cpu: &mut CPU, rd: usize, rs1: usize, imm: i32) {
     cpu.write_reg(rd,
@@ -15,22 +32,11 @@ pub fn addi(cpu: &mut CPU, rd: usize, rs1: usize, imm: i32) {
 }
 
 pub fn slt(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
-// set less than for unsigned number
-pub fn sltu(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    cpu.write_reg(rd,
-        (cpu.read_reg(rs1) < cpu.read_reg(rs2)) as u32
-    );
-}
 pub fn slti(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
 pub fn sltiu(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
-pub fn and(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
-pub fn or(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
-pub fn xor(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
 pub fn andi(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
 pub fn ori(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
 pub fn xori(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
-pub fn sll(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
-pub fn srl(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
 pub fn sra(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
 pub fn slli(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _shamt: u32) {}
 pub fn srli(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _shamt: u32) {}
