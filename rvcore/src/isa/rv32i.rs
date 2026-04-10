@@ -23,9 +23,9 @@ pub fn sub(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
     cpu.write_reg(rd, cpu.read_reg(rs1).wrapping_sub(cpu.read_reg(rs2)));
 }
 pub fn sll(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    let a = cpu.read_reg(rs1);
-    let shamt = cpu.read_reg(rs2) & 0x1F;
-    cpu.write_reg(rd, a << shamt);
+    //let a = cpu.read_reg(rs1);
+    //let shamt = cpu.read_reg(rs2) & 0x1F;
+    cpu.write_reg(rd, cpu.read_reg(rs1) << cpu.read_reg(rs2) & 0x1F);
 }
 pub fn srl(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
     let a = cpu.read_reg(rs1);
