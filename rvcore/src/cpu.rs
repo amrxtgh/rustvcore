@@ -1,10 +1,10 @@
-use crate::isa::rv32i;
+use crate::isa::{rv32i, rv32zicsr::CsrFile};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PrivilegeMode {
-    User = 0,
-    Supervisor = 1,
-    Machine = 3,
+    User = 0,       // user or application mode
+    Supervisor = 1, // supervisor mode
+    Machine = 3,    // machine mode
     Debug = 4,
 }
 
@@ -13,6 +13,7 @@ impl PrivilegeMode {
         match value {
             0 => PrivilegeMode::User,
             1 => PrivilegeMode::Supervisor,
+            // there is 2 also which represent the reserved mode but that is not imp
             3 => PrivilegeMode::Machine,
             4 => PrivilegeMode::Debug,
             _ => PrivilegeMode::Machine,
@@ -25,18 +26,20 @@ pub const XLEN: u32 = 32;
 Single hart: represents execution context
 Each hart has it's own PC, registers and can run fetch-decode-execute loop
 */
-pub struct CPU {
+pub struct Hart {
     pub regs: [u32; XLEN as usize],
     pub pc: u32,
     pub mode: PrivilegeMode,
+    pub csrs: CsrFile,
 }
 
-impl CPU {
+impl Hart {
     pub fn new() -> Self {
         Self {
             regs: [0; XLEN as usize],
             pc: 0,
             mode: PrivilegeMode::Machine,
+            csrs: CsrFile::new(),
         }
     }
 

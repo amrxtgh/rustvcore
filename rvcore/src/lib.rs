@@ -8,3 +8,4 @@ pub mod trap;
 pub use cpu::CPU;
 pub use machine::Machine;
 pub use memory::RAM;
+pub mod csr;
