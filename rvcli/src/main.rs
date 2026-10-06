@@ -1,4 +1,4 @@
-use rvcore::CPU;
+use rvcore::Hart;
 
 fn main() {
     

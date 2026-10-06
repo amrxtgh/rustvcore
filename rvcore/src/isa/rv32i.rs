@@ -1,73 +1,73 @@
-use crate::cpu::CPU;
+use crate::hart::Hart;
 // Base RV32I
 
-pub fn add(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    cpu.write_reg(rd, cpu.read_reg(rs1).wrapping_add(cpu.read_reg(rs2)));
+pub fn add(hart: &mut Hart, rd: usize, rs1: usize, rs2: usize) {
+    hart.write_reg(rd, hart.read_reg(rs1).wrapping_add(hart.read_reg(rs2)));
 }
 
 // set less than for unsigned number
-pub fn sltu(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    cpu.write_reg(rd, (cpu.read_reg(rs1) < cpu.read_reg(rs2)) as u32);
+pub fn sltu(hart: &mut Hart, rd: usize, rs1: usize, rs2: usize) {
+    hart.write_reg(rd, (hart.read_reg(rs1) < hart.read_reg(rs2)) as u32);
 }
 
-pub fn and(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    cpu.write_reg(rd, cpu.read_reg(rs1) & cpu.read_reg(rs2));
+pub fn and(hart: &mut Hart, rd: usize, rs1: usize, rs2: usize) {
+    hart.write_reg(rd, hart.read_reg(rs1) & hart.read_reg(rs2));
 }
-pub fn or(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    cpu.write_reg(rd, cpu.read_reg(rs1) | cpu.read_reg(rs2));
+pub fn or(hart: &mut Hart, rd: usize, rs1: usize, rs2: usize) {
+    hart.write_reg(rd, hart.read_reg(rs1) | hart.read_reg(rs2));
 }
-pub fn xor(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    cpu.write_reg(rd, cpu.read_reg(rs1) ^ cpu.read_reg(rs2));
+pub fn xor(hart: &mut Hart, rd: usize, rs1: usize, rs2: usize) {
+    hart.write_reg(rd, hart.read_reg(rs1) ^ hart.read_reg(rs2));
 }
-pub fn sub(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    cpu.write_reg(rd, cpu.read_reg(rs1).wrapping_sub(cpu.read_reg(rs2)));
+pub fn sub(hart: &mut Hart, rd: usize, rs1: usize, rs2: usize) {
+    hart.write_reg(rd, hart.read_reg(rs1).wrapping_sub(hart.read_reg(rs2)));
 }
-pub fn sll(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    //let a = cpu.read_reg(rs1);
-    //let shamt = cpu.read_reg(rs2) & 0x1F;
-    cpu.write_reg(rd, cpu.read_reg(rs1) << cpu.read_reg(rs2) & 0x1F);
+pub fn sll(hart: &mut Hart, rd: usize, rs1: usize, rs2: usize) {
+    //let a = hart.read_reg(rs1);
+    //let shamt = hart.read_reg(rs2) & 0x1F;
+    hart.write_reg(rd, hart.read_reg(rs1) << hart.read_reg(rs2) & 0x1F);
 }
-pub fn srl(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    let a = cpu.read_reg(rs1);
-    let shamt = cpu.read_reg(rs2) & 0x1F;
-    cpu.write_reg(rd, a >> shamt);
+pub fn srl(hart: &mut Hart, rd: usize, rs1: usize, rs2: usize) {
+    let a = hart.read_reg(rs1);
+    let shamt = hart.read_reg(rs2) & 0x1F;
+    hart.write_reg(rd, a >> shamt);
 }
-pub fn sra(cpu: &mut CPU, rd: usize, rs1: usize, rs2: usize) {
-    let a = cpu.read_reg(rs1) as i32;
-    let shamt = cpu.read_reg(rs2) & 0x1F;
-    cpu.write_reg(rd, (a >> shamt) as u32);
-}
-
-pub fn addi(cpu: &mut CPU, rd: usize, rs1: usize, imm: i32) {
-    // cpu.write_reg(rd, cpu.read_reg(rs1).wrapping_add(imm as u32));
+pub fn sra(hart: &mut Hart, rd: usize, rs1: usize, rs2: usize) {
+    let a = hart.read_reg(rs1) as i32;
+    let shamt = hart.read_reg(rs2) & 0x1F;
+    hart.write_reg(rd, (a >> shamt) as u32);
 }
 
-pub fn slt(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _rs2: usize) {}
-pub fn slti(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
-pub fn sltiu(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
-pub fn andi(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
-pub fn ori(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
-pub fn xori(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
-pub fn slli(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _shamt: u32) {}
-pub fn srli(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _shamt: u32) {}
-pub fn srai(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _shamt: u32) {}
-pub fn lui(_cpu: &mut crate::cpu::CPU, _rd: usize, _imm: i32) {}
-pub fn auipc(_cpu: &mut crate::cpu::CPU, _rd: usize, _imm: i32) {}
-pub fn lb(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
-pub fn lbu(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
-pub fn lh(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
-pub fn lhu(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
-pub fn lw(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
-pub fn sb(_cpu: &mut crate::cpu::CPU, _rs1: usize, _rs2: usize, _imm: i32) {}
-pub fn sh(_cpu: &mut crate::cpu::CPU, _rs1: usize, _rs2: usize, _imm: i32) {}
-pub fn sw(_cpu: &mut crate::cpu::CPU, _rs1: usize, _rs2: usize, _imm: i32) {}
-pub fn beq(_cpu: &mut crate::cpu::CPU, _rs1: usize, _rs2: usize, _imm: i32) {}
-pub fn bne(_cpu: &mut crate::cpu::CPU, _rs1: usize, _rs2: usize, _imm: i32) {}
-pub fn blt(_cpu: &mut crate::cpu::CPU, _rs1: usize, _rs2: usize, _imm: i32) {}
-pub fn bge(_cpu: &mut crate::cpu::CPU, _rs1: usize, _rs2: usize, _imm: i32) {}
-pub fn bltu(_cpu: &mut crate::cpu::CPU, _rs1: usize, _rs2: usize, _imm: i32) {}
-pub fn bgeu(_cpu: &mut crate::cpu::CPU, _rs1: usize, _rs2: usize, _imm: i32) {}
-pub fn jal(_cpu: &mut crate::cpu::CPU, _rd: usize, _imm: i32) {}
-pub fn jalr(_cpu: &mut crate::cpu::CPU, _rd: usize, _rs1: usize, _imm: i32) {}
-pub fn ecall(_cpu: &mut crate::cpu::CPU) {}
-pub fn ebreak(_cpu: &mut crate::cpu::CPU) {}
+pub fn addi(hart: &mut Hart, rd: usize, rs1: usize, imm: i32) {
+    // hart.write_reg(rd, hart.read_reg(rs1).wrapping_add(imm as u32));
+}
+
+pub fn slt(_hart: &mut crate::hart::Hart, _rd: usize, _rs1: usize, _rs2: usize) {}
+pub fn slti(_hart: &mut crate::hart::Hart, _rd: usize, _rs1: usize, _imm: i32) {}
+pub fn sltiu(_hart: &mut crate::hart::Hart, _rd: usize, _rs1: usize, _imm: i32) {}
+pub fn andi(_hart: &mut crate::hart::Hart, _rd: usize, _rs1: usize, _imm: i32) {}
+pub fn ori(_hart: &mut crate::hart::Hart, _rd: usize, _rs1: usize, _imm: i32) {}
+pub fn xori(_hart: &mut crate::hart::Hart, _rd: usize, _rs1: usize, _imm: i32) {}
+pub fn slli(_hart: &mut crate::hart::Hart, _rd: usize, _rs1: usize, _shamt: u32) {}
+pub fn srli(_hart: &mut crate::hart::Hart, _rd: usize, _rs1: usize, _shamt: u32) {}
+pub fn srai(_hart: &mut crate::hart::Hart, _rd: usize, _rs1: usize, _shamt: u32) {}
+pub fn lui(_hart: &mut crate::hart::Hart, _rd: usize, _imm: i32) {}
+pub fn auipc(_hart: &mut crate::hart::Hart, _rd: usize, _imm: i32) {}
+pub fn lb(_hart: &mut crate::hart::Hart, _rd: usize, _rs1: usize, _imm: i32) {}
+pub fn lbu(_hart: &mut crate::hart::Hart, _rd: usize, _rs1: usize, _imm: i32) {}
+pub fn lh(_hart: &mut crate::hart::Hart, _rd: usize, _rs1: usize, _imm: i32) {}
+pub fn lhu(_hart: &mut crate::hart::Hart, _rd: usize, _rs1: usize, _imm: i32) {}
+pub fn lw(_hart: &mut crate::hart::Hart, _rd: usize, _rs1: usize, _imm: i32) {}
+pub fn sb(_hart: &mut crate::hart::Hart, _rs1: usize, _rs2: usize, _imm: i32) {}
+pub fn sh(_hart: &mut crate::hart::Hart, _rs1: usize, _rs2: usize, _imm: i32) {}
+pub fn sw(_hart: &mut crate::hart::Hart, _rs1: usize, _rs2: usize, _imm: i32) {}
+pub fn beq(_hart: &mut crate::hart::Hart, _rs1: usize, _rs2: usize, _imm: i32) {}
+pub fn bne(_hart: &mut crate::hart::Hart, _rs1: usize, _rs2: usize, _imm: i32) {}
+pub fn blt(_hart: &mut crate::hart::Hart, _rs1: usize, _rs2: usize, _imm: i32) {}
+pub fn bge(_hart: &mut crate::hart::Hart, _rs1: usize, _rs2: usize, _imm: i32) {}
+pub fn bltu(_hart: &mut crate::hart::Hart, _rs1: usize, _rs2: usize, _imm: i32) {}
+pub fn bgeu(_hart: &mut crate::hart::Hart, _rs1: usize, _rs2: usize, _imm: i32) {}
+pub fn jal(_hart: &mut crate::hart::Hart, _rd: usize, _imm: i32) {}
+pub fn jalr(_hart: &mut crate::hart::Hart, _rd: usize, _rs1: usize, _imm: i32) {}
+pub fn ecall(_hart: &mut crate::hart::Hart) {}
+pub fn ebreak(_hart: &mut crate::hart::Hart) {}
